@@ -2,7 +2,7 @@
 
 **Branching Recursive Asynchronous Nodal Decentralized Intelligence**
 
-> An agentic legion enacting collusive resource allocation that bridges current market activities into a post-current economic model.
+> An agentic legion enacting collusive resource allocation that bridges current market activities into a post-currency economic model.
 
 ---
 
