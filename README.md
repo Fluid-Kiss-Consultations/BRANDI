@@ -62,4 +62,4 @@ Architecture and agent protocol design in progress. No application code has been
 
 ---
 
-*Fluid Kiss Consultations*
+*©2025 John A.Welch, founder/Chief Consultant,Fluid Kiss Consultations*
