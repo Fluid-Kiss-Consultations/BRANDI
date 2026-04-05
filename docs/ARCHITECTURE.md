@@ -124,6 +124,7 @@ enum AgentStatus {
   RUNNING = 1,
   PAUSED = 2,
   ERROR = 3,
+  INACTIVE = 4,
 }
 ```
 
@@ -471,6 +472,18 @@ enum ReportOutcome {
   BOUNDARY_HIT = 'boundary_hit',
 }
 ```
+
+### 2.8 Extended Type Definitions
+
+The core data structures above define the foundational types that flow through the system. Domain-specific specifications extend these types with additional detail:
+
+| Specification | Types Defined | Purpose |
+|--------------|---------------|---------|
+| `docs/CONVERGENCE.md` | `EvaluatorId`, `DecisionPosition`, `ReasoningChain`, `ReasoningStep`, `CompatibilityConfig`, `DivergenceAnalysis` (full), `DetectionPhase` | Convergence evaluation format, detection algorithm, divergence analysis |
+| `docs/CONTENTMENT.md` | `DecompositionStep`, `ContentmentCycleRecord`, `MutualismOutcome`, `ActionRecord`, `KnowledgeContribution`, `IContentmentRegistry`, `SharedRealityGroup`, `ActiveLoop` | Iterative mutualism reversion, training data capture, concurrent loop management |
+| `docs/INTEGRATION.md` | `IGasAccountant`, `IChainMapper`, `ChainMapping`, `AllocationThresholds`, `AllocationResult`, `AllocationRecord`, `CacheEntry` (expanded), `ComponentHealth`, `SystemEvent`, `EventSeverity` | N.I.K.O.System facet client operations, monitoring, resource allocation |
+
+These types are authoritative in their respective specifications. This document defines the shared vocabulary; the specs define the domain-specific extensions.
 
 ---
 
@@ -828,6 +841,12 @@ interface WorkflowNode {
   isBranchPoint: boolean;
 }
 
+/**
+ * @title NodeType
+ * @notice All workflow node types.
+ * @dev See docs/WORKFLOWS.md §2.1 for authoritative node type
+ *      definitions, execution semantics, and agent type assignments.
+ */
 enum NodeType {
   /** Perform a tool action */
   ACTION = 'action',
@@ -852,6 +871,18 @@ enum NodeType {
 
   /** Report to Learning Substrate */
   REPORT = 'report',
+
+  /** Marks the start of a recursive loop */
+  RECURSION_ENTRY = 'recursion_entry',
+
+  /** Evaluates termination condition for recursive loops */
+  RECURSION_EXIT = 'recursion_exit',
+
+  /** Query S.H.A.N.N.O.N. for curated knowledge via NIKO */
+  KNOWLEDGE_QUERY = 'knowledge_query',
+
+  /** Submit result hash to N.I.K.O.System's OracleFacet */
+  CHAIN_COMMIT = 'chain_commit',
 }
 
 interface NodeConnection {
@@ -916,6 +947,10 @@ interface RecursionConfig {
 
 ### 4.5 Convergence Module
 
+> **Detailed specification:** `docs/CONVERGENCE.md` is authoritative for evaluation format, detection algorithm, parameter compatibility, divergence analysis, and directive construction. The interfaces below define the module's API surface. `docs/CONTENTMENT.md` is authoritative for iterative mutualism reversion mechanics, first logistical reality identification, and training data capture.
+
+> **The Blinded Eye:** Convergence detection is source-blind. On-chain, each evaluator is individually identified for auditability and provenance. But the detection algorithm itself does not see who submitted an evaluation — it sees positions, reasoning chains, and parameters. This is a constitutional constraint, not a convenience. The Foundation name is not decorative. Convergence is the blinded eye: it judges the reasoning, never the reasoner.
+
 ```typescript
 /**
  * @title IConvergenceModule
@@ -924,19 +959,28 @@ interface RecursionConfig {
  *      Agents submit requests through the NIKO integration layer.
  *      This module is invoked by the system when a convergence
  *      request arrives from NIKO/SHANNON.
+ *
+ *      Evaluation submission is unified — a single method accepts
+ *      evaluations from Admin, Counsel, and Human identically.
+ *      The evaluator identity is recorded on-chain for provenance
+ *      but is NOT visible to the detection algorithm. The detection
+ *      algorithm operates on positions and reasoning, blind to source.
+ *
+ *      See CONVERGENCE.md for full Evaluation, DecisionPosition,
+ *      ReasoningChain, EvaluatorId, CompatibilityConfig, and
+ *      DivergenceAnalysis type definitions.
  */
 interface IConvergenceModule {
   /** Initialize a convergence process */
   initiate(request: ConvergenceRequest): Promise<void>;
 
-  /** Submit an evaluation from Admin */
-  submitAdminEvaluation(requestId: string, evaluation: Evaluation): Promise<void>;
-
-  /** Submit an evaluation from a Counsel domain */
-  submitCounselEvaluation(requestId: string, domain: string, evaluation: Evaluation): Promise<void>;
-
-  /** Submit an evaluation from the Human participant */
-  submitHumanEvaluation(requestId: string, evaluation: Evaluation): Promise<void>;
+  /**
+   * Submit an evaluation from any evaluating party.
+   * The evaluator identity within the Evaluation is recorded
+   * on-chain for provenance but stripped before the evaluation
+   * reaches the detection algorithm.
+   */
+  submitEvaluation(requestId: string, evaluation: Evaluation): Promise<void>;
 
   /** Check for convergence across all evaluations */
   checkConvergence(requestId: string): ConvergenceCheckResult;
@@ -945,21 +989,35 @@ interface IConvergenceModule {
   revertToMutualism(requestId: string): Promise<MutualismContext>;
 }
 
+/**
+ * @title Evaluation
+ * @notice Abbreviated interface — see CONVERGENCE.md §3 for the
+ *         full specification including DecisionPosition, ReasoningChain,
+ *         and EvaluatorId types.
+ * @dev All evaluators use the same structure. The detection algorithm
+ *      operates on position and reasoning, blind to evaluator identity.
+ */
 interface Evaluation {
-  /** The evaluating party */
-  evaluator: 'admin' | string; // string for counsel domain names
+  /** Evaluator identity — recorded on-chain, stripped before detection */
+  evaluator: EvaluatorId;
 
-  /** The evaluated decision */
-  decision: string;
+  /** Hash of the decision being evaluated */
+  decisionHash: string;
 
-  /** Structured reasoning */
-  reasoning: string;
+  /** The evaluator's position in the decision space */
+  position: DecisionPosition;
 
-  /** Confidence level (0-1) */
+  /** Structured reasoning chain */
+  reasoning: ReasoningChain;
+
+  /** Confidence level (0-1) — metadata, not a weight */
   confidence: number;
 
   /** Domains considered in this evaluation */
   domainsConsidered: string[];
+
+  /** Constitutional hash at time of evaluation */
+  constitutionalHash: string;
 
   /** Timestamp */
   evaluatedAt: number;
@@ -972,19 +1030,38 @@ interface ConvergenceCheckResult {
   /** If converged, the manifested decision */
   directive: ConvergenceDirective | null;
 
-  /** If not converged, where the evaluations diverge */
-  divergencePoints: DivergencePoint[] | null;
+  /** If not converged, structured divergence analysis */
+  divergenceAnalysis: DivergenceAnalysis | null;
+}
+
+/**
+ * @title DivergenceAnalysis
+ * @notice Abbreviated — see CONVERGENCE.md §4.4 for the full
+ *         specification including DetectionPhase and divergence typing.
+ */
+interface DivergenceAnalysis {
+  /** Which phase of detection failed */
+  failedPhase: string;
+
+  /** Specific divergence points */
+  divergencePoints: DivergencePoint[];
+
+  /** Whether an information gap was detected */
+  informationGapDetected: boolean;
+
+  /** Recommended focus for iterative mutualism */
+  suggestedFocus: string;
 }
 
 interface DivergencePoint {
-  /** Which evaluators diverge */
-  evaluators: string[];
-
-  /** What they diverge on */
+  /** What the divergence is about — NOT who diverges */
   topic: string;
 
   /** The nature of the divergence */
   description: string;
+
+  /** Whether this is informational, evaluative, or constitutional */
+  divergenceType: 'informational' | 'evaluative' | 'constitutional';
 }
 
 interface MutualismContext {

@@ -266,6 +266,7 @@ CI workflows live in `.github/workflows/` named `ci-phase-<N>.yml`. Always help 
 4. **The convergence model has no hierarchy.** Do not build approval chains, supervisor patterns, or human-override mechanisms.
 5. **Non-convergence reverts to iterative mutualism.** Do not implement timeout-based fallbacks, default decisions, or "fail-open" patterns for convergence.
 6. **The human is an equal participant.** UIs, APIs, and workflows must reflect this.
+7. **Convergence detection is source-blind (The Blinded Eye).** The detection algorithm sees positions and reasoning, never evaluator identity. Evaluator identity is recorded on-chain for provenance but stripped before reaching detection. Do not build detection logic that conditions on who submitted an evaluation. Divergence analysis (post-detection) may re-attach identity for diagnostic purposes only.
 
 ### Design Verification Checklist
 
@@ -274,6 +275,7 @@ Before committing any significant code, verify:
 - [ ] Does this component know which system it belongs to? (B.R.A.N.D.I. / N.I.K.O. / S.H.A.N.N.O.N.)
 - [ ] Does agent communication route through N.I.K.O.System?
 - [ ] Does this code assume any single point of authority? (It shouldn't.)
+- [ ] Does convergence detection logic condition on evaluator identity? (It shouldn't — Blinded Eye.)
 - [ ] Could this code produce a dead state? (It shouldn't — revert to mutualism.)
 - [ ] Does this code exploit cognitive vulnerabilities? (Bridge Rule violation.)
 - [ ] Is the human treated as an equal participant? (Not above, not below.)
@@ -314,7 +316,7 @@ Do not skip layers. Do not build the workflow engine before the agent primitive 
 | Convergence Spec | `docs/CONVERGENCE.md` | Convergence detection protocol |
 | Contentment Spec | `docs/CONTENTMENT.md` | Iterative mutualism reversion mechanics |
 
-**Read `DESIGN.md` before any of the docs/ files.** It establishes the philosophical foundation that all technical decisions must align with.
+**Read `DESIGN.md` before any of the docs/ files.** It establishes the philosophical foundation that all technical decisions must align with. All seven documents are drafted and have passed internal consistency review.
 
 ---
 
@@ -334,6 +336,7 @@ These terms have precise meanings in this project. Use them consistently.
 | **Human (Mirror)** | Embodied participant. Equal to every other component — no more, no less. |
 | **Point B** | Draft symbiotic utopian earth. Living document. Co-evolves with the process. |
 | **Bridge Rule** | The method of healing must not use the disease as its mechanism. |
+| **The Blinded Eye** | Convergence detection is source-blind. On-chain provenance tracks who evaluated (auditability). The detection algorithm sees only positions and reasoning (integrity). The Foundation name is not decorative — it is a constitutional constraint. |
 | **Great Filter** | What this system exists to defeat. Extractive zero-sum + endless optimization = civilizational termination. |
 
 ---

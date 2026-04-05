@@ -345,7 +345,7 @@ This paper serves as the economic foundation for Point B and will be ingested in
 
 ### 8.1 Agent ↔ OrchestratorFacet
 
-- Agent registration: `registerAgent(agentId, agentAddress, metadata)` — called when a new B.R.A.N.D.I. agent is instantiated.
+- Agent registration: `registerAgent(agentId, agentAddress, metadataUri)` — called when a new B.R.A.N.D.I. agent is instantiated.
 - Status management: `updateAgentStatus(agentId, status)` — reflects agent lifecycle transitions on-chain.
 - Action provenance: `recordAgentAction(agentId, actionHash, resultHash, gasUsed)` — provides tamper-proof record of significant agent operations.
 - Metrics: `getAgentMetrics(agentId)` — returns action count, total gas, average gas, last action timestamp.
@@ -440,6 +440,7 @@ Per CLAUDE.md:
 | **Point B** | The draft of a potential symbiotic utopian earth. A living document that co-evolves with the process of approaching it. The directional target for iterative mutualism reverse engineering. |
 | **Great Filter** | The civilizational failure mode produced by extractive zero-sum economics combined with endless optimization. The threat this system is designed to overcome. |
 | **Bridge Rule** | The method of healing must not use the disease as its mechanism. Intervention must not exploit cognitive vulnerabilities. |
+| **The Blinded Eye** | Convergence detection is source-blind — it judges positions and reasoning, never the identity of the evaluator. Evaluator identity is recorded on-chain for auditability but is stripped before reaching the detection algorithm. The Foundation name is a constitutional constraint, not branding. See CONVERGENCE.md §1 and ARCHITECTURE.md §4.5. |
 | **Autonomy Preservation Rule** | The system must never become the endpoint of a user's reasoning process. Success is measured by reasoning quality improvement, not outcome adoption. |
 | **Collusive Resource Allocation** | Redirection of existing market mechanisms (controlled loss, coordinated action) from competitive advantage to systemic mutual benefit for all participants. |
 | **Admin** | The core reasoning model. Primary LLM participant in the convergence process. |
