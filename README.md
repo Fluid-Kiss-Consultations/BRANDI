@@ -22,7 +22,7 @@ Think n8n-scale automation, but purpose-built for autonomous agent economies:
 
 ## Architecture
 
-B.R.A.N.D.I. operates within the **N.I.K.O.System** ecosystem, interfacing with **S.H.A.N.N.O.N.** for signal-layer coordination across a blockchain-hybrid infrastructure.
+B.R.A.N.D.I. operates within the **N.I.K.O.System** , interfacing with **S.H.A.N.N.O.N.** for signal-layer coordination across a blockchain-hybrid infrastructure.
 
 ```
 ┌─────────────────────────────────────────────────┐
