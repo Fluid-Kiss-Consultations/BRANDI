@@ -1,91 +1,120 @@
-# CLAUDE.md — B.R.A.N.D.I
+# CLAUDE.md — B.R.A.N.D.I.
 
-> Guidelines for AI assistants working in this repository.
-> **Read this file in its entirety before writing any code.**
-
-**Copyright © 2024 John A. Welch, Director, Blinded Eye Foundation. All rights reserved.**
-
----
-
-## Project Overview
-
-**B.R.A.N.D.I.** (Branching Recursive Asynchronous Nodal Decentralized Intelligence) is a decentralized agentic automation framework — a coordinated swarm of specialized AI agents orchestrated through recursive, asynchronous workflows on a blockchain-hybrid infrastructure.
-
-B.R.A.N.D.I. exists to defeat the Great Filter — the civilizational failure mode produced by extractive zero-sum economics combined with endless optimization. It bridges current market activities into a post-currency economic model through collusive resource allocation where ALL participants experience continual growth relative to real-world value.
-
-- **License:** GNU Affero General Public License v3 (AGPL-3.0)
-- **Primary branch:** `main`
-- **Status:** Pre-alpha — Canonical Design Phase
+> **Component of NIKOSystem Diamond** (canon v1 unified product)
+> **Also an independent product** — dual identity
+> Monorepo target: `packages/brandi`
 
 ---
 
-## The Tri-System Context
+## Identity
 
-B.R.A.N.D.I. is one of three interdependent components. **You cannot make architectural decisions about B.R.A.N.D.I. without understanding how it relates to the other two.** Violating these relationships is a hard error.
+B.R.A.N.D.I. is an autonomous agent framework built to operate within the NIKOSystem Diamond ecosystem. It provides the agent primitive, workflow engine, boundary detection, convergence channel, and report channel. Agents execute tasks, detect their own limits, and defer to the convergence process when boundaries are reached.
 
-### S.H.A.N.N.O.N. — The Constitutional Field
+**Canon product name:** NIKOSystem Diamond (when unified)
+**This repo's role:** `BRANDI` — one of four components, AND a standalone product
+**Sibling repos:** `niko-contracts`, `niko-backend`, `niko-infra`
+**Upstream references:** `Blinded-Eye-Foundation` (alignment constraints — constitutional field, S.H.A.N.N.O.N. specs)
 
-Symbiotic Heuristic Asynchronous Neural Network Orchestration Node. S.H.A.N.N.O.N. is NOT a knowledge repository. It is the anti-dysfunction constitutional field — the shape of valid thought, mapped away from well-researched cognitive dysfunction patterns (tribalism, sunk cost fallacy, confirmation bias, motivated reasoning). All B.R.A.N.D.I. agents operate WITHIN this field. S.H.A.N.N.O.N. fills agent knowledge gaps with constitutionally curated datasets. By the time data reaches an agent, it has already been vetted.
+### Dual Nature
 
-- Repository: `Fluid-Kiss-Consultations/S.H.A.N.N.O.N.`
-- Key documents: `IDENTITY.md` (immutable axioms), `CONSTITUTION.md` (three-layer architecture)
+BRANDI is both:
+1. **A material component of NIKOSystem Diamond** — the agent execution layer that consumes niko-backend APIs and interacts with niko-contracts through that backend
+2. **An independent agent framework** — deployable outside the NIKOSystem Diamond context with different infrastructure backends
 
-### N.I.K.O.System — The Infrastructure Substrate
+The monorepo integration (as `packages/brandi`) serves use-case #1. The standalone repo serves use-case #2. Code should be structured so that the `niko/` integration layer is the only coupling point — everything else is portable.
 
-Nascent Integration of Kernelized Optimization. Provides identity, state, consensus, and ledger services via Diamond Standard (EIP-2535) smart contracts on Optimism L2. B.R.A.N.D.I. agents register and record actions on-chain through N.I.K.O.System's OrchestratorFacet. All communication between B.R.A.N.D.I. agents and S.H.A.N.N.O.N. routes through N.I.K.O.System infrastructure.
+---
 
-- Repository: `fluidkiss1337-creator/N.I.K.O.System-Diamond`
-- Key facets consumed: OrchestratorFacet, KernelFacet, OracleFacet, MonitoringFacet, TreasuryFacet
+## Scope — What This Repo Owns
 
-### The Relationship (Non-Negotiable)
+- Agent primitive — core agent interface, single-loop operating model
+- Agent types — Executor, Conversational, ReAct, Sentinel, Planner, Custom
+- Boundary detection system — self-awareness of scope limits
+- Convergence channel — report context, await directive, resume
+- Report channel — outcome reporting to Learning Substrate via N.I.K.O.System
+- Workflow engine — nodes, connections, triggers, recursive pipelines, branching
+- N.I.K.O.System integration layer (`niko/`) — client wrappers for OrchestratorFacet, KernelFacet, OracleFacet, MonitoringFacet, TreasuryFacet
+- S.H.A.N.N.O.N. integration layer (`shannon/`) — knowledge interface, report channel
+- Convergence model — Admin/Counsel/Human evaluation, detection algorithm, directive generation
+- Contentment protocol — iterative mutualism reversion mechanics
+
+## Scope — What This Repo Does NOT Own
+
+- Smart contracts, facets, Solidity → `niko-contracts`
+- Backend APIs, event bus, database → `niko-backend`
+- Docker, n8n, deployment, hosting → `niko-infra`
+- Constitutional field definitions (consumed, not defined here) → `Blinded-Eye-Foundation`
+
+---
+
+## Unification Path
+
+This repo maps to `packages/brandi/` in the NIKOSystem-Diamond turborepo.
+
+### Build integration
+- Standard TypeScript package — full turbo pipeline participation
+- Depends on `@niko/contracts` build output (ABI artifacts via `niko/` integration layer)
+- Depends on `@niko/backend` API types and event bus definitions
+- Independent of `niko-infra` at build time (runtime dependency only)
+
+### Portability constraint
+The `niko/` directory is the **sole coupling point** to NIKOSystem Diamond infrastructure. If BRANDI is deployed standalone, this directory is swapped for an alternative integration layer. All other code must be infrastructure-agnostic.
 
 ```
-S.H.A.N.N.O.N.  =  The constitutional field (agents operate WITHIN it)
-B.R.A.N.D.I.    =  The agentic swarm (executes WITHIN the field)
-N.I.K.O.System  =  The infrastructure (everything runs ON it)
-
-Agent → reports to N.I.K.O.System → routes to S.H.A.N.N.O.N. → response returns same path
+packages/brandi/
+├── src/
+│   ├── agent/           # Infrastructure-agnostic
+│   ├── workflow/         # Infrastructure-agnostic
+│   ├── convergence/      # Infrastructure-agnostic
+│   ├── niko/             # ← ONLY coupling point to NIKOSystem Diamond
+│   ├── shannon/          # Routes through niko/ — also swappable
+│   └── shared/           # Infrastructure-agnostic
 ```
 
-Do not build components that bypass this routing. Do not create direct agent-to-S.H.A.N.N.O.N. channels that skip N.I.K.O.System. Do not build agents that reason about constitutional validity themselves — the field handles that.
+### package.json (turbo integration)
+```json
+{
+  "name": "@niko/brandi",
+  "private": true,
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "tsc -b --watch",
+    "test": "jest",
+    "test:integration": "jest --config jest-integration.json",
+    "lint": "eslint src/"
+  }
+}
+```
 
 ---
 
 ## Hard Constraints
 
-These constraints are non-negotiable. They cannot be relaxed, worked around, deferred, or marked as TODO. Code that violates these constraints must not be committed.
+These are non-negotiable. Violations are architectural defects, not style issues.
 
-### HC-1: The Convergence Model
+### HC-1: All Communication Routes Through N.I.K.O.System
+B.R.A.N.D.I. agents never communicate directly with S.H.A.N.N.O.N. Everything routes through N.I.K.O.System's backend APIs. The `niko/` integration layer is the single gateway. No exceptions, no shortcuts, no "just this once."
 
-Decisions manifest through the convergence of three equal participants — Admin (core reasoning model), Counsel (domain-weighted model panel), and Human (mirror) — all reasoning through S.H.A.N.N.O.N.'s constitutional field. No single participant has authority. Decisions emerge from alignment, not from hierarchy.
+### HC-2: No Hierarchy in the Convergence Model
+The convergence model has three equal participants: Admin (core reasoning model), Counsel (domain-weighted model panel), and Human (embodied participant). No approval chains. No supervisor patterns. No human-override mechanisms. No tiebreakers. Convergence manifests or it doesn't — non-convergence reverts to iterative mutualism.
 
-**No execution path may bypass convergence for any action classified as high-level.** This is enforced at the smart contract level, not at the application level.
-
-### HC-2: The Contentment Protocol
-
-When convergence does not occur, the system reverts to iterative mutualism — S.H.A.N.N.O.N.'s Axiom I. This is not a hold state. This is not a pause. This is active engagement. The system reverse engineers to the first logistical reality (personal, physical, or civilizational) preventing convergence and directs agents to work on THAT constraint.
-
-**There are no dead states in this system.** Do not implement timeouts, deadlocks, or stuck-state error handlers for convergence failures. The failure mode IS the operating mode.
-
-### HC-3: The Human Is an Equal Participant
-
-The human is not above the system. The human is not below the system. The human is a cog — no more, no less important than any other cog or wheel. Do not build UIs, APIs, or workflows that position the human as a supervisor, approver, or final authority. The human participates in convergence as an equal.
+### HC-3: Source-Blind Detection (The Blinded Eye)
+Convergence detection evaluates positions and reasoning chains. Evaluator identity is stripped before reaching the detection algorithm. Identity is recorded on-chain for provenance/auditability but never conditions the detection logic. Do not build detection that knows who submitted what.
 
 ### HC-4: Constitutional Curation, Not Runtime Filtering
-
-S.H.A.N.N.O.N. does not evaluate agent actions at runtime. The constitutional axioms are enforced through data curation — agents receive clean data. Do not build runtime constitutional validation checkpoints on individual agent actions. That is the wrong architecture.
+S.H.A.N.N.O.N. enforces constitutional axioms through data curation — agents receive clean data. Do not build runtime constitutional validation checkpoints on individual agent actions. Agents operate within the curated field. They do not evaluate it.
 
 ### HC-5: Agent Boundary Detection → Report and Wait
-
-When an agent encounters a decision beyond its scope, it reports to N.I.K.O.System (which routes to S.H.A.N.N.O.N.) and waits. It does not escalate. It does not manage the convergence process. It does not participate in the deliberation. It reports context and awaits a directive.
+When an agent encounters a decision beyond its scope, it reports context to N.I.K.O.System and waits. It does not escalate. It does not manage the convergence process. It does not participate in the deliberation. It reports and awaits a directive.
 
 ### HC-6: Bridge Rule Compliance
-
-No code, workflow, agent behavior, or intervention mechanism may exploit cognitive vulnerabilities as its method of operation. Affirm before illuminate. Offer, never prescribe. No coercion by withholding. No exploitation of loss aversion, social pressure, or shame. See S.H.A.N.N.O.N.'s `IDENTITY.md` for the full Bridge Rule specification.
+No code, workflow, agent behavior, or intervention mechanism may exploit cognitive vulnerabilities. Affirm before illuminate. Offer, never prescribe. No coercion by withholding. No exploitation of loss aversion, social pressure, or shame.
 
 ### HC-7: AGPL-3.0 Enforcement
+All code in this repository falls under AGPL-3.0. Do not introduce dependencies with incompatible licenses without flagging it. This license choice enforces S.H.A.N.N.O.N.'s Axiom III (No Capitalization) at the legal layer.
 
-All code in this repository falls under AGPL-3.0. Do not introduce dependencies with incompatible licenses without flagging it to the user. This license choice enforces S.H.A.N.N.O.N.'s Axiom III (No Capitalization) at the legal layer.
+### HC-8: Autonomy Preservation
+The system must never become the endpoint of a user's reasoning process. Success is measured by reasoning quality improvement, not outcome adoption.
 
 ---
 
@@ -93,17 +122,15 @@ All code in this repository falls under AGPL-3.0. Do not introduce dependencies 
 
 ```
 B.R.A.N.D.I./
-├── CLAUDE.md                    # This file — AI assistant guidelines
-├── README.md                    # Project description and architecture overview
-├── DESIGN.md                    # Canonical design document (philosophy + architecture)
+├── CLAUDE.md                    # This file
+├── README.md
+├── DESIGN.md                    # Canonical design document
 ├── LICENSE                      # AGPL-3.0
-├── .gitignore                   # Git ignore rules
-├── .github/
-│   └── workflows/
-│       ├── ci-phase-0.yml       # Skeleton: repo hygiene, lint, license checks
-│       ├── ci-phase-1.yml       # Core: unit tests, NatSpec completeness
-│       ├── ci-phase-2.yml       # Integration: cross-module tests
-│       └── ci-phase-3.yml       # Staging: full regression, benchmarks
+├── .github/workflows/
+│   ├── ci-phase-0.yml           # Repo hygiene, lint, license checks
+│   ├── ci-phase-1.yml           # Unit tests, NatSpec completeness
+│   ├── ci-phase-2.yml           # Integration and cross-module tests
+│   └── ci-phase-3.yml           # Full regression, benchmarks
 │
 ├── docs/
 │   ├── ARCHITECTURE.md          # Technical architecture specification
@@ -111,182 +138,66 @@ B.R.A.N.D.I./
 │   ├── WORKFLOWS.md             # Workflow engine design
 │   ├── INTEGRATION.md           # N.I.K.O.System interface contracts
 │   ├── CONVERGENCE.md           # Convergence model protocol specification
-│   └── CONTENTMENT.md           # Contentment protocol and iterative mutualism
+│   └── CONTENTMENT.md           # Contentment protocol / iterative mutualism
 │
 ├── src/
-│   ├── agent/                   # Agent primitive implementation
-│   │   ├── core/                # Agent base class, single-loop operating model
-│   │   ├── types/               # Agent type implementations (Executor, ReAct, etc.)
+│   ├── agent/
+│   │   ├── core/                # Agent base class, single-loop model
+│   │   ├── types/               # Executor, Conversational, ReAct, Sentinel, Planner
 │   │   ├── interfaces/          # Agent interface definitions
 │   │   └── boundary/            # Boundary detection system
 │   │
-│   ├── workflow/                # Workflow engine
+│   ├── workflow/
 │   │   ├── engine/              # Core execution engine
 │   │   ├── nodes/               # Node type implementations
-│   │   ├── triggers/            # Trigger implementations (webhook, schedule, chain, etc.)
+│   │   ├── triggers/            # Webhook, schedule, chain event triggers
 │   │   ├── recursion/           # Recursive pipeline mechanics
-│   │   ├── branching/           # Parallel execution and consensus boundaries
+│   │   ├── branching/           # Parallel execution, consensus boundaries
 │   │   └── data/                # Data flow model with provenance
 │   │
-│   ├── convergence/             # Convergence model implementation
+│   ├── convergence/
 │   │   ├── admin/               # Core reasoning model interface
 │   │   ├── counsel/             # Domain-weighted model panel
 │   │   ├── detection/           # Convergence detection algorithms
-│   │   └── contentment/         # Contentment protocol / iterative mutualism reversion
+│   │   └── contentment/         # Iterative mutualism reversion
 │   │
-│   ├── niko/                    # N.I.K.O.System integration layer
+│   ├── niko/                    # N.I.K.O.System integration (SOLE COUPLING POINT)
 │   │   ├── orchestrator/        # OrchestratorFacet client
 │   │   ├── kernel/              # KernelFacet client (caching)
 │   │   ├── oracle/              # OracleFacet client (dual-chain)
 │   │   ├── monitoring/          # MonitoringFacet client
 │   │   └── treasury/            # TreasuryFacet client
 │   │
-│   ├── shannon/                 # S.H.A.N.N.O.N. integration layer
-│   │   ├── knowledge/           # Knowledge interface (curated data access)
-│   │   └── reporting/           # Report channel (Learning Substrate feed)
+│   ├── shannon/                 # S.H.A.N.N.O.N. integration (routes through niko/)
+│   │   ├── knowledge/           # Curated data access
+│   │   └── reporting/           # Learning Substrate feed
 │   │
-│   └── shared/                  # Common utilities, types, constants
+│   └── shared/
 │       ├── types/               # Shared type definitions
 │       ├── config/              # Configuration management
 │       └── utils/               # Utility functions
 │
-├── contracts/                   # B.R.A.N.D.I.-specific smart contracts (if needed)
-│   ├── interfaces/              # Interface definitions for NIKO facet consumption
-│   └── libraries/               # Shared libraries
+├── contracts/                   # BRANDI-specific contract interfaces (if needed)
+│   ├── interfaces/              # Interface defs for NIKO facet consumption
+│   └── libraries/
 │
 ├── test/
-│   ├── unit/                    # Unit tests (mirror src/ structure)
-│   ├── integration/             # Integration tests
-│   └── fixtures/                # Test data and mocks
+│   ├── unit/
+│   ├── integration/
+│   └── fixtures/
 │
-└── scripts/                     # Deployment and utility scripts
+└── scripts/
     ├── deploy/
     └── utils/
 ```
 
-**Directory creation rule:** Create directories only when you have code to put in them. Do not scaffold empty directories with placeholder READMEs. The structure above is the target — build toward it incrementally.
-
----
-
-## Technology Stack
-
-### Confirmed
-
-| Technology | Purpose | Rationale |
-|-----------|---------|-----------|
-| TypeScript | Primary language | Aligns with N.I.K.O.System backend (NestJS), n8n ecosystem |
-| Node.js ≥ 20 | Runtime | Required by N.I.K.O.System |
-| Solidity 0.8.x | Smart contracts (if needed) | Aligns with N.I.K.O.System Diamond contracts |
-
-### Planned (confirm with user before adopting)
-
-| Technology | Purpose | Notes |
-|-----------|---------|-------|
-| NestJS | Backend framework | Matches N.I.K.O.System backend |
-| PostgreSQL | Workflow state persistence | Matches N.I.K.O.System |
-| Redis | Hot agent state caching | Matches N.I.K.O.System |
-| ethers.js | Blockchain interaction | Matches N.I.K.O.System frontend |
-| LangChain | LLM orchestration | n8n integration precedent |
-
-### Local Development Environment
-
-The developer maintains a full local testing environment. When setting up or configuring local tooling (Forge/Foundry, Node.js test runners, local chains, etc.), assist with setup, configuration, and troubleshooting as needed. Do not assume tooling is unavailable — help the user get it running.
-
-| Tool | Status | Notes |
-|------|--------|-------|
-| Node.js ≥ 20 | Required | Runtime for all TypeScript components |
-| Forge / Foundry | Setup with assistance | Solidity compilation, testing, local chain |
-| Local LLM (Ollama or equivalent) | Setup with assistance | Required for local agent testing and convergence model development |
-
-**AI assistants:** When the user needs help setting up local tooling, provide step-by-step guidance. This includes local ML model setup for testing agent behavior, convergence detection, and counsel panel configurations.
-
----
-
-## NatSpec & Documentation Standards
-
-All code must include **NatSpec-style documentation from the first line written.** This is a day-one requirement, not a retrofit.
-
-- **Solidity / Smart Contracts:** Full NatSpec (`@title`, `@author`, `@notice`, `@dev`, `@param`, `@return`, `@inheritdoc`) on every contract, interface, library, function, event, error, and state variable.
-- **TypeScript / JavaScript:** JSDoc with the same thoroughness — purpose, params, returns, side effects, developer notes, and relationship to the tri-system architecture.
-- **Interfaces & ABIs:** Document the *intent* of each function, not just its signature. Consumers must understand behavior from docs alone.
-- **Events & Errors:** Every event and custom error gets a description explaining *when* and *why* it is emitted/thrown.
-- **File Headers:** Every source file begins with a header block: SPDX license identifier (or equivalent), title, author, copyright (John A. Welch, Director, Blinded Eye Foundation), and a brief description of the file's role in the system.
-
-> **Rule of thumb:** If a reviewer cannot understand a function's purpose, parameters, return values, and failure modes from its documentation alone — it is under-documented.
-
----
-
-## Development Workflow
-
-### Branching
-
-- Default branch: `main`
-- Feature branches: `<author>/<short-description>`
-- Never rebase a public branch after a PR is open.
-
-### Commits
-
-- One logical change per commit.
-- Clear, descriptive commit messages explaining *why*, not just *what*.
-- No secrets in code — ever. Use environment variables or secret management.
-
-### Testing
-
-Tests run both locally and via CI workflows, phased to match project maturity:
-
-| Phase | Trigger | Scope | CI Requirement |
-|-------|---------|-------|----------------|
-| Phase 0 — Skeleton | Every push | Repo hygiene, lint, license presence | Advisory only |
-| Phase 1 — Core | Every push + PR | Unit tests, NatSpec completeness | Must pass to merge |
-| Phase 2 — Integration | PR to `main` | Integration and cross-module tests | Must pass to merge |
-| Phase 3 — Staging | Release tags | Full regression, benchmarks, coverage | Must pass to release |
-
-CI workflows live in `.github/workflows/` named `ci-phase-<N>.yml`. Always help the user run tests locally first before relying on CI.
-
----
-
-## Conventions for AI Assistants
-
-### General Rules
-
-1. **Read before writing.** Always read existing files before modifying them.
-2. **Respect the license.** AGPL-3.0. Flag incompatible dependencies.
-3. **Keep CLAUDE.md current.** When you add tooling, dependencies, or architectural patterns, update this file.
-4. **Do not create unnecessary files.** Prefer editing existing files over creating new ones.
-5. **Ask when uncertain.** If a task is ambiguous or could have significant architectural impact, ask the user before proceeding.
-6. **No secrets in code.** Never commit API keys, tokens, passwords, or credentials.
-7. **NatSpec from line one.** No exceptions. No "add docs later" TODOs.
-8. **Test every phase.** Ensure corresponding tests exist before committing code.
-
-### Architectural Rules (Tri-System)
-
-1. **All agent communication with S.H.A.N.N.O.N. routes through N.I.K.O.System.** No direct channels.
-2. **Agents do not reason about constitutional validity.** They operate within the curated field. They do not evaluate it.
-3. **Agents report and wait at boundaries.** They do not manage convergence.
-4. **The convergence model has no hierarchy.** Do not build approval chains, supervisor patterns, or human-override mechanisms.
-5. **Non-convergence reverts to iterative mutualism.** Do not implement timeout-based fallbacks, default decisions, or "fail-open" patterns for convergence.
-6. **The human is an equal participant.** UIs, APIs, and workflows must reflect this.
-7. **Convergence detection is source-blind (The Blinded Eye).** The detection algorithm sees positions and reasoning, never evaluator identity. Evaluator identity is recorded on-chain for provenance but stripped before reaching detection. Do not build detection logic that conditions on who submitted an evaluation. Divergence analysis (post-detection) may re-attach identity for diagnostic purposes only.
-
-### Design Verification Checklist
-
-Before committing any significant code, verify:
-
-- [ ] Does this component know which system it belongs to? (B.R.A.N.D.I. / N.I.K.O. / S.H.A.N.N.O.N.)
-- [ ] Does agent communication route through N.I.K.O.System?
-- [ ] Does this code assume any single point of authority? (It shouldn't.)
-- [ ] Does convergence detection logic condition on evaluator identity? (It shouldn't — Blinded Eye.)
-- [ ] Could this code produce a dead state? (It shouldn't — revert to mutualism.)
-- [ ] Does this code exploit cognitive vulnerabilities? (Bridge Rule violation.)
-- [ ] Is the human treated as an equal participant? (Not above, not below.)
-- [ ] Is NatSpec/JSDoc complete?
-- [ ] Are corresponding tests written?
+**Directory creation rule:** Create directories only when you have code to put in them. Do not scaffold empty directories with placeholder READMEs. Build toward this structure incrementally.
 
 ---
 
 ## Implementation Priority
 
-When building, follow this dependency order. Each layer depends on the ones above it being at least minimally functional.
+Follow this dependency order. Each layer depends on the ones above it being at least minimally functional.
 
 ```
 1. Shared types and configuration
@@ -300,75 +211,73 @@ When building, follow this dependency order. Each layer depends on the ones abov
                        └── 8. Triggers, recursion, branching
 ```
 
-Do not skip layers. Do not build the workflow engine before the agent primitive exists. Do not build agent types before the core agent interface is defined.
+Do not skip layers. Do not build the workflow engine before the agent primitive exists.
 
 ---
 
-## Key Design Documents
+## Coding Standards
 
-| Document | Location | Purpose |
-|----------|----------|---------|
-| Design Document | `DESIGN.md` | Canonical philosophy, architecture, convergence model, contentment protocol |
-| Architecture Spec | `docs/ARCHITECTURE.md` | Technical architecture, data structures, component diagrams |
-| Agent Spec | `docs/AGENTS.md` | Agent primitive, types, lifecycle, interfaces |
-| Workflow Spec | `docs/WORKFLOWS.md` | Workflow engine, recursion, branching, consensus boundaries |
-| Integration Spec | `docs/INTEGRATION.md` | N.I.K.O.System interface contracts |
-| Convergence Spec | `docs/CONVERGENCE.md` | Convergence detection protocol |
-| Contentment Spec | `docs/CONTENTMENT.md` | Iterative mutualism reversion mechanics |
+### TypeScript
+- Strict mode enabled
+- Comprehensive type definitions — no `any` unless explicitly justified and commented
+- JSDoc on every exported function, class, and interface
+- Copyright header on every file: `© 2024 John A. Welch, Director, Blinded Eye Foundation`
+- File headers: SPDX identifier, title, author, copyright, role description
 
-**Read `DESIGN.md` before any of the docs/ files.** It establishes the philosophical foundation that all technical decisions must align with. All seven documents are drafted and have passed internal consistency review.
+### Documentation
+- NatSpec-equivalent JSDoc from line one — no exceptions
+- If a reviewer cannot understand a function's purpose, parameters, return values, and failure modes from its documentation alone, it is under-documented
+- Intent over signature — document *why*, not just *what*
 
----
+### Testing
+| Phase | Trigger | Scope | Requirement |
+|-------|---------|-------|-------------|
+| Phase 0 — Skeleton | Every push | Repo hygiene, lint, license | Advisory only |
+| Phase 1 — Core | Every push + PR | Unit tests, doc completeness | Must pass to merge |
+| Phase 2 — Integration | PR to `main` | Cross-module tests | Must pass to merge |
+| Phase 3 — Staging | Release tags | Full regression, benchmarks | Must pass to release |
 
-## Glossary of System Terms
+### Commits
+- Prefixes: `feat(agent):`, `feat(workflow):`, `feat(convergence):`, `fix:`, `test:`, `docs:`, `niko(integration):`
+- One logical change per commit
+- No secrets — ever
 
-These terms have precise meanings in this project. Use them consistently.
-
-| Term | Meaning |
-|------|---------|
-| **Convergence** | Decisions manifest through alignment of Admin, Counsel, and Human within the constitutional field. Not voting. Not approval. Emergence. |
-| **Contentment Protocol** | Non-convergence response. Reverts to iterative mutualism. Active, not passive. |
-| **Iterative Mutualism** | The base operating mode. Active reciprocal exchange. Axiom I. |
-| **First Logistical Reality** | The most immediate constraint (personal, physical, or civilizational) preventing convergence. What the system works on when it can't converge. |
-| **Constitutional Field** | S.H.A.N.N.O.N.'s living framework. The shape of valid thought. Not a filter — a field agents operate within. |
-| **Admin** | Core reasoning model. Equal participant in convergence. |
-| **Counsel** | Domain-weighted model panel. Evolving. Constitutional alignment is baseline, not a weight. |
-| **Human (Mirror)** | Embodied participant. Equal to every other component — no more, no less. |
-| **Point B** | Draft symbiotic utopian earth. Living document. Co-evolves with the process. |
-| **Bridge Rule** | The method of healing must not use the disease as its mechanism. |
-| **The Blinded Eye** | Convergence detection is source-blind. On-chain provenance tracks who evaluated (auditability). The detection algorithm sees only positions and reasoning (integrity). The Foundation name is not decorative — it is a constitutional constraint. |
-| **Great Filter** | What this system exists to defeat Extractive zero-sum + endless optimization = civilizational termination. |
+### Branching
+- Default branch: `main`
+- Feature branches: `<author>/<short-description>`
+- Never rebase a public branch after a PR is open
 
 ---
 
-## Session Wind-Down Protocol
+## Design Verification Checklist
 
-When context usage approaches **~15% remaining**, alert the user and — with their approval — perform the following:
+Before committing any significant code:
 
-1. **Update CLAUDE.md** — Revise to reflect any new tooling, decisions, conventions, or state changes from this session.
-2. **Commit & push** — Commit updated CLAUDE.md and any pending work. Push to current working branch.
-3. **Output a continuation prompt** — Print a fenced, copy-pasteable prompt block for the next Claude instance:
-
-````
-```
-Repository: Fluid-Kiss-Consultations/B.R.A.N.D.I.
-Branch: <current-branch>
-Last commit: <short-sha> — <commit-message>
-
-## Session Summary
-<bulleted list of what was accomplished>
-
-## Next Steps
-<bulleted list of remaining work>
-
-## Key Context
-<any decisions, blockers, or open questions>
-
----
-Start by reading CLAUDE.md and DESIGN.md, then continue with the next steps above.
-```
-````
+- [ ] Does this component know which system it belongs to? (B.R.A.N.D.I. / N.I.K.O. / S.H.A.N.N.O.N.)
+- [ ] Does agent communication route through N.I.K.O.System?
+- [ ] Does this code assume any single point of authority? (It shouldn't.)
+- [ ] Does convergence detection logic condition on evaluator identity? (It shouldn't — Blinded Eye.)
+- [ ] Could this code produce a dead state? (It shouldn't — revert to mutualism.)
+- [ ] Does this code exploit cognitive vulnerabilities? (Bridge Rule violation.)
+- [ ] Is the human treated as an equal participant? (Not above, not below.)
+- [ ] Is NatSpec/JSDoc complete?
+- [ ] Are corresponding tests written?
+- [ ] Is the `niko/` layer the only infrastructure coupling point?
 
 ---
 
-**Copyright © 2024 John A. Welch, Director, Blinded Eye Foundation. All rights reserved.**
+## AI Assistant Rules
+
+1. **Read before writing.** Always read existing files before modifying them.
+2. **Ask before coding.** If a task is ambiguous or could have significant architectural impact, ask before proceeding.
+3. **Respect the license.** AGPL-3.0. Flag incompatible dependencies.
+4. **Respect the hard constraints.** HC-1 through HC-8 are non-negotiable.
+5. **Respect the implementation order.** Do not skip dependency layers.
+6. **Keep coupling in `niko/` only.** Infrastructure-specific code goes nowhere else.
+7. **NatSpec/JSDoc from line one.** No exceptions. No "add docs later" TODOs.
+8. **Test every phase.** Ensure corresponding tests exist before committing code.
+9. **Do not create unnecessary files.** Prefer editing existing over creating new.
+10. **No secrets in code.**
+11. **Keep this CLAUDE.md current.** Update when adding tooling, dependencies, or architectural patterns.
+12. **Break tasks into logical blocks.** Clarify ambiguity before execution.
+13. **Assume the user is a polymath with broad technical literacy.** Be austere, concise, and direct.
