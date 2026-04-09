@@ -64,6 +64,4 @@ B.R.A.N.D.I. operates within the **N.I.K.O.System** , interfacing with **S.H.A.N
 
 ## License
 
-[GNU Affero General Public License v3.0](LICENSE)
-
 © 2025 John A. Welch, Founder & Chief Consultant, Fluid Kiss Consultations
