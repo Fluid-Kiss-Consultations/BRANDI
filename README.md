@@ -1,3 +1,7 @@
+> **ARCHIVED** — This repository has been migrated to [NIKOSystem-Diamond-v1](https://github.com/Fluid-Kiss-Consultations/NIKOSystem-Diamond-v1) as `packages/brandi/`. All future development happens in the monorepo.
+
+---
+
 # B.R.A.N.D.I.
 
 **Branching Recursive Asynchronous Nodal Decentralized Intelligence**
